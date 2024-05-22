@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>民泊宿泊者名簿</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>民泊宿泊者名簿</h1>
+        <form action="submit.php" method="post" enctype="multipart/form-data">
+            <div id="guests">
+                <!-- Guest forms will be dynamically added here -->
+            </div>
+            <div class="add-guest">
+                <button type="button" onclick="addGuest()">宿泊者を追加</button>
+            </div>
+            <input type="submit" value="送信">
+        </form>
+    </div>
+
+    <script>
+        const maxGuests = 9;
+        let guestCount = 0;
+
+        function addGuest() {
+            if (guestCount < maxGuests) {
+                const guestDiv = document.createElement('div');
+                guestDiv.classList.add('guest', 'active');
+                guestCount++;
+                guestDiv.innerHTML = `
+                    <div class="guest-number">${guestCount === 1 ? '代表の宿泊者（宿泊者1）' : '宿泊者' + guestCount}</div>
+                    <label>名前: <input type="text" name="name[]"></label>
+                    <label>メールアドレス: <input type="email" name="email[]"></label>
+                    <label>年齢: <input type="number" name="age[]" min="0"></label>
+                    <label>性別:
+                        <select name="gender[]">
+                            <option value="男性">男性</option>
+                            <option value="女性">女性</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </label>
+                    <label>ご職業: <input type="text" name="occupation[]"></label>
+                    <label>国籍: <input type="text" name="nationality[]"></label>
+                    <label>パスポート番号: <input type="text" name="passport_number[]"></label>
+                    <label>チェックイン日: <input type="date" name="checkin_date[]"></label>
+                    <label>チェックアウト日: <input type="date" name="checkout_date[]"></label>
+                    <label>パスポートファイル添付: <input type="file" name="passport_file[]"></label>
+                    <div class="remove-guest">
+                        <button type="button" onclick="removeGuest(this)">削除</button>
+                    </div>
+                `;
+                document.getElementById('guests').appendChild(guestDiv);
+            }
+        }
+
+        function removeGuest(button) {
+            const guestDiv = button.closest('.guest');
+            guestDiv.remove();
+            guestCount--;
+            // Re-number remaining guests
+            const guests = document.querySelectorAll('.guest.active');
+            guests.forEach((guest, index) => {
+                const guestNumberDiv = guest.querySelector('.guest-number');
+                guestNumberDiv.textContent = index === 0 ? '代表の宿泊者（宿泊者1）' : '宿泊者' + (index + 1);
+            });
+        }
+    </script>
+</body>
+</html>
